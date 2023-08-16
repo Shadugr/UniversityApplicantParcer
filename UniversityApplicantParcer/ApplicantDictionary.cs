@@ -58,13 +58,35 @@ namespace UniversityApplicantParcer
             if(count > Applicants.Count) { count = Applicants.Count; }
             if(count < 1) { count = 1; }
 
-            for (int i = 1; i <= count; i++)
+            Dictionary<uint, Applicant> filter = Applicants.Take(count).ToDictionary(n => n.Key, n=> n.Value);
+
+            foreach (var applicant in filter)
             {
-                Console.WriteLine($"Id - {Applicants[(uint)i].Id}\nName - {Applicants[(uint)i].Name}\n" +
-                    $"Status - {Applicants[(uint)i].Status}\nPriority - {Applicants[(uint)i].Priority}\n" +
-                    $"Choose University - {Applicants[(uint)i].IsChoose}\n" +
-                    $"Give Document - {Applicants[(uint)i].IsDocument}\nRating - {Applicants[(uint)i].Rating}\n\n");
+                Console.WriteLine($"Id - {applicant.Value.Id}\nName - {applicant.Value.Name}\n" +
+                    $"Status - {applicant.Value.Status}\nPriority - {applicant.Value.Priority}\n" +
+                    $"Choose University - {applicant.Value.IsChoose}\n" +
+                    $"Give Document - {applicant.Value.IsDocument}\nRating - {applicant.Value.Rating}\n\n");
             }
+        }
+        public ApplicantDictionary Filter(bool isContractOut = false, float minRating = 0f, string status = "")
+        {
+            var filterDictionary = Applicants;
+            if(isContractOut) 
+            {
+                filterDictionary = filterDictionary.Where(n => n.Value.Priority != 'К')
+                    .ToDictionary(n => n.Key, n => n.Value); 
+            }
+            if (minRating > 0f)
+            {
+                filterDictionary = filterDictionary.Where(n => n.Value.Rating > minRating)
+                    .ToDictionary(n => n.Key, n => n.Value);
+            }
+            if (!string.IsNullOrEmpty(status))
+            {
+                filterDictionary = filterDictionary.Where(n => n.Value.Status == status)
+                    .ToDictionary(n => n.Key, n => n.Value);
+            }
+            return new ApplicantDictionary(filterDictionary);
         }
     }
 }
