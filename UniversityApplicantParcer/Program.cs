@@ -9,12 +9,12 @@ internal class Program
     private static string UserFilePath { get; } = FolderPath + @"\" + FILE_NAME;
     private static string ExcelFilePath { get; } = FolderPath + @"\" + "Applicants.xlsx";
 
+    private static ApplicantDictionary applicantDictionary;
+
     private static void Main()
     {
         FileInfo userTxt = new(UserFilePath);
         string url = !File.Exists(UserFilePath) || userTxt.Length == 0 ? SaveUserFile() : LoadUserFile();
-        ApplicantDictionary applicantDictionary = new(url);
-        Console.Clear();
         ConsoleKeyInfo input;
         do
         {
@@ -101,11 +101,14 @@ internal class Program
             File.WriteAllText(UserFilePath, url);
             Console.Clear();
         }
+        applicantDictionary = new(url);
+        Console.Clear();
         return url;
     }
     private static string LoadUserFile()
     {
         string url = File.ReadAllText(UserFilePath);
+        applicantDictionary = new(url);
         Console.WriteLine($"File loaded.\nURL - {url}");
         Console.Clear();
         return url;
