@@ -29,11 +29,14 @@ namespace UniversityApplicantParcer
             var node = htmlDoc.DocumentNode
                 .Descendants()
                 .Where(node1 => node1.HasClass("offer-request")).Skip(1).ToList();
+            browser.Quit();
+            if (node.Count == 0 || node is null)
+                return null;
             return node;
         }
         private static Dictionary<uint, Applicant> GetApplicantsDictionary(List<HtmlNode>? node)
         {
-            if(node is null) { return new Dictionary<uint, Applicant>(); }
+            if (node is null) return new Dictionary<uint, Applicant>();
 
             var htmlDoc = new HtmlDocument();
             Dictionary<uint, Applicant> result = new();
@@ -45,22 +48,20 @@ namespace UniversityApplicantParcer
                 string name = argument[1].InnerText;
                 float rating = float.Parse(argument[6].InnerText);
                 if (rating <= 80f && ApplicantResults.Results.Exists(a => a.Name == name))
-                {
                     rating += ApplicantResults.Results.First(a => a.Name == name).Result * 0.6f;
-                }
-                result.Add(id, 
+                result.Add(id,
                     new Applicant(id, name, argument[2].InnerText, char.Parse(argument[3].InnerText), false, false, rating));
-                if(argument[4].OuterHtml.Contains("od-1") ||
-                    argument[5].OuterHtml.Contains("od-2")) { result[id].IsChoose = true; }
-                if (argument[5].OuterHtml.Contains("od-1")) { result[id].IsDocument = true; }
+                if (argument[4].OuterHtml.Contains("od-1") || argument[5].OuterHtml.Contains("od-2"))
+                    result[id].IsChoose = true;
+                if (argument[5].OuterHtml.Contains("od-1"))
+                    result[id].IsDocument = true;
             }
             return result;
         }
 
-        public void PrintAll(int count = int.MaxValue)
+        public void PrintAll(int count = 0)
         {
-            if(count > Applicants.Count) { count = Applicants.Count; }
-            if(count < 1) { count = 1; }
+            if (count > Applicants.Count || count < 1) count = Applicants.Count;
 
             Dictionary<uint, Applicant> filter = Applicants.Take(count).OrderByDescending(u => u.Value.Rating).ToDictionary(n => n.Key, n=> n.Value);
 
