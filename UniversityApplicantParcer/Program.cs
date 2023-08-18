@@ -5,13 +5,15 @@ internal class Program
 {
     private const string FILE_NAME = "user.txt";
 
-    private static string FilePath { get; } = AppDomain.CurrentDomain.BaseDirectory + @"\" + FILE_NAME;
-    private static string ExcelFilePath { get; } = AppDomain.CurrentDomain.BaseDirectory + @"\" + "Applicants.xlsx";
+    private static string FolderPath { get; } = AppDomain.CurrentDomain.BaseDirectory + @"\userdata";
+    private static string UserFilePath { get; } = FolderPath + @"\" + FILE_NAME;
+    private static string ExcelFilePath { get; } = FolderPath + @"\" + "Applicants.xlsx";
 
     private static void Main()
     {
-        FileInfo userTxt = new(FilePath);
-        string url = !File.Exists(FilePath) || userTxt.Length == 0 ? SaveUserFile() : LoadUserFile();
+        Directory.CreateDirectory(FolderPath);
+        FileInfo userTxt = new(UserFilePath);
+        string url = !File.Exists(UserFilePath) || userTxt.Length == 0 ? SaveUserFile() : LoadUserFile();
         ApplicantDictionary applicantDictionary = new(url);
         Console.Clear();
         ConsoleKeyInfo input;
@@ -62,7 +64,8 @@ internal class Program
                         }
                         package.SaveAs(new FileInfo(ExcelFilePath));
                     }
-                    Console.WriteLine("Press any key to return at menu.");
+                    Console.Clear();
+                    Console.WriteLine("Excel file created\nPress any key to return at menu.");
                     Console.ReadKey();
                     break;
                 case ConsoleKey.D2:
@@ -80,8 +83,6 @@ internal class Program
                 case ConsoleKey.NumPad3:
                     Console.Clear();
                     url = SaveUserFile();
-                    Console.WriteLine("Press any key to return at menu.");
-                    Console.ReadKey();
                     break;
                 default:
                     break;
@@ -97,14 +98,14 @@ internal class Program
         {
             Console.WriteLine("Input URL (If empty default master 122 Computer Science):");
             url = Console.ReadLine();
-            File.WriteAllText(FilePath, url);
+            File.WriteAllText(UserFilePath, url);
             Console.Clear();
         }
         return url;
     }
     private static string LoadUserFile()
     {
-        string url = File.ReadAllText(FilePath);
+        string url = File.ReadAllText(UserFilePath);
         Console.WriteLine($"File loaded.\nURL - {url}");
         Console.Clear();
         return url;
