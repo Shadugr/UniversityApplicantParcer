@@ -11,7 +11,6 @@ internal class Program
 
     private static void Main()
     {
-        Directory.CreateDirectory(FolderPath);
         FileInfo userTxt = new(UserFilePath);
         string url = !File.Exists(UserFilePath) || userTxt.Length == 0 ? SaveUserFile() : LoadUserFile();
         ApplicantDictionary applicantDictionary = new(url);
@@ -96,6 +95,7 @@ internal class Program
         string url = "";
         while (string.IsNullOrEmpty(url))
         {
+            Directory.CreateDirectory(FolderPath);
             Console.WriteLine("Input URL (If empty default master 122 Computer Science):");
             url = Console.ReadLine();
             File.WriteAllText(UserFilePath, url);
