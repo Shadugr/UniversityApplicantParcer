@@ -20,7 +20,7 @@ namespace UniversityApplicantParcer
 
         private static List<HtmlNode>? GetNode(string url)
         {
-            var browser = new EdgeDriver(Environment.CurrentDirectory);
+            var browser = new EdgeDriver();
             browser.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(30);
             browser.Navigate().GoToUrl(url);
 
