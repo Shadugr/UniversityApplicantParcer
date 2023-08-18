@@ -4,7 +4,6 @@ using UniversityApplicantParcer;
 internal class Program
 {
     private const string FILE_NAME = "user.txt";
-    private const string DEFAULT_URL = "https://vstup.edbo.gov.ua/offer/1218942/";
 
     private static string FilePath { get; } = AppDomain.CurrentDomain.BaseDirectory + @"\" + FILE_NAME;
     private static string ExcelFilePath { get; } = AppDomain.CurrentDomain.BaseDirectory + @"\" + "Applicants.xlsx";
@@ -93,16 +92,21 @@ internal class Program
 
     private static string SaveUserFile()
     {
-        Console.WriteLine("Input URL (If empty default master 122 Computer Science):");
-        string url = Console.ReadLine();
-        if (string.IsNullOrEmpty(url)) { url = DEFAULT_URL; }
-        File.WriteAllText(FilePath, url );
+        string url = "";
+        while (string.IsNullOrEmpty(url))
+        {
+            Console.WriteLine("Input URL (If empty default master 122 Computer Science):");
+            url = Console.ReadLine();
+            File.WriteAllText(FilePath, url);
+            Console.Clear();
+        }
         return url;
     }
     private static string LoadUserFile()
     {
         string url = File.ReadAllText(FilePath);
         Console.WriteLine($"File loaded.\nURL - {url}");
+        Console.Clear();
         return url;
     }
 }
