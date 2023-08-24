@@ -49,9 +49,15 @@ namespace UniversityApplicantParcer
                 uint id = uint.Parse(argument[0].InnerText);
                 string name = argument[1].InnerText;
                 float rating = float.Parse(argument[6].InnerText);
+                string priority = "";
                 if (rating <= 80f && ApplicantResults.Results.Exists(a => a.Name == name))
                     rating += ApplicantResults.Results.First(a => a.Name == name).Result * 0.6f;
-                result.Add(id, new Applicant(id, name, argument[2].InnerText, char.Parse(argument[3].InnerText.First().ToString()), false, false, rating));
+                if (argument[3].InnerText.Length > 1)
+                    priority = argument[3].InnerHtml.Split('<', '>')[2];
+                else
+                    priority = argument[3].InnerText[0].ToString();
+                Console.WriteLine(priority);
+                result.Add(id, new Applicant(id, name, argument[2].InnerText, char.Parse(priority), false, false, rating));
                 if (argument[4].OuterHtml.Contains("od-1") || argument[5].OuterHtml.Contains("od-2"))
                     result[id].IsChoose = true;
                 if (argument[5].OuterHtml.Contains("od-1"))
